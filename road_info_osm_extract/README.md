@@ -17,4 +17,19 @@ road_info_osm_extract is a ros package written in python that extracts road info
 
 ##**Package Outputs**
 
-- the output of the package is the custom message "road_lists" that is published on the topic ""
+- the output of the package is the custom message "road_lists" that is published on the topic "/road_info"
+- the message "road_lists" is a list of roads (a list of lists), each list (road) is a 2D list with 11 coloumns and the number of rows depends on the number of roads in the area selected.
+- each road is defined by a start node and an end node. each node is defined by 4 parameters, x-coordinate, y-coordinate, latitude and longitude, all with respect to the open street map coordinates.
+- the road list coloumns is divided in the following order:
+
+0- road id
+1- the x-coordinate of the start node
+2- the y-coordinate of the start node
+3- the latitude of the start node
+4- the longitude of the start node
+5- the x-coordinate of the end node
+6- the y-coordinate of the end node
+7- the latitude of the end node
+8- the longitude of the end node
+9- the length of the road
+10- a boolean that represents if the road is a one way road or not (0 = not a one way road, 1 = a one way road)
