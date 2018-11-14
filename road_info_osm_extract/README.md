@@ -33,3 +33,5 @@ road_info_osm_extract is a ros package written in python that extracts road info
 8- the longitude of the end node
 9- the length of the road
 10- a boolean that represents if the road is a one way road or not (0 = not a one way road, 1 = a one way road)
+
+##
