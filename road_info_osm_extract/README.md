@@ -2,7 +2,7 @@
 
 road_info_osm_extract is a **ROS** package written in **Python** that extracts road information from a specified area in open street maps.
 
-##**Process:**
+##**How to use the package:**
 
 1- go to [Nominatim Open Street Maps application] (https://nominatim.openstreetmap.org/) and search the area that you want to extract information from, the application should highlight to you the exact area that will be downloaded according to your **search string**.  
 2- copy your search string and go to the file "gps_road_estimation/road_info_osm_extract/scripts/extract_road_info.py" and assign the "place_name" variable to your search string.  
