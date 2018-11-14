@@ -1,0 +1,5 @@
+<launch>
+
+  <node pkg="road_info_osm_extract" type="main.py" name="main"/>
+
+</launch>
