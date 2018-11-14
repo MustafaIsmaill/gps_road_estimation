@@ -10,13 +10,13 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 4- from the terminal run the following command `$ roslaunch road_info_osm_extract road_info_osm_extract.launch`  
 5- subscribe to the "/road_info" topic to receive the road information
 
-##**Package Inputs**
+##**Package Inputs:**
 
 1- name of place or area in a map  
 2- name of ros node  
 3- rate of publishing the road information in Hertz  
 
-##**Package Outputs**
+##**Package Outputs:**
 
 - the output of the package is the custom message "road_lists" that is published on the topic "/road_info"  
 - the message "road_lists" is a list of roads (a list of lists), each list (road) is an array with 11 elements.  
