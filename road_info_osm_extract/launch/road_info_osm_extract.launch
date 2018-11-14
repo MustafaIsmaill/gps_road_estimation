@@ -1,5 +1,5 @@
 <launch>
 
-  <node pkg="road_info_osm_extract" type="main.py" name="main"/>
+  <node pkg="road_info_osm_extract" type="extract_road_info.py" name="extract_road_info"/>
 
 </launch>
