@@ -8,6 +8,7 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 2- copy your search string and go to the file "gps_road_estimation/road_info_osm_extract/scripts/extract_road_info.py" and assign the "place_name" variable to your search string.  
 3- in the file "gps_road_estimation/road_info_osm_extract/scripts/extract_road_info.py", rename the "node_name" and change the "publish_rate" variables to match your needs (optional).  
 4- from the terminal run the following command `$ roslaunch road_info_osm_extract road_info_osm_extract.launch`  
+5- subscribe to the "/road_info" topic to receive the road information
 
 ##**Package Inputs**
 
