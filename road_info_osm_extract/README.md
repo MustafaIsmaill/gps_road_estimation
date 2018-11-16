@@ -19,7 +19,7 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 
 ##**Package Outputs:**
 
-. The package publishes two messages of the type **"pointsList"**. **pointsList** is a list of roads on the map, where each road has a list of points on the road.  
+. The package publishes two messages of the type **"pointsList"**. **pointsList** is a list of roads on the map, where each road has a list of all the available points on the road.  
 . The first message is published on the topic **"/road_info"** and contains info about the road in **"point"** format. The road info has 5 points that are arranged as follows:  
 
 Point 1. xy-coordinates of the start of the road  
