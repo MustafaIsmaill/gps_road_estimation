@@ -9,6 +9,7 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 3. in the file "gps_road_estimation/road_info_osm_extract/scripts/extract_road_info.py", rename the "node_name" and change the "publish_rate" variables to match your needs (optional).  
 4. from the terminal run the following command `$ roslaunch road_info_osm_extract road_info_osm_extract.launch`  
 5. subscribe to the "/road_info" topic to receive the road information
+6. subscribe to the "/road_points" topic to receive the XY points of the map
 
 ##**Package Inputs:**
 
@@ -18,21 +19,19 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 
 ##**Package Outputs:**
 
-- the output of the package is the custom message "road_lists" that is published on the topic "/road_info"  
-- the message "road_lists" is a list of roads (a list of lists), each list (road) is an array with 11 elements.  
-- the list elements are a definition of the road. each road is defined by a start node and an end node. each node is defined by 4 parameters, x-coordinate, y-coordinate, latitude and longitude, all with respect to the open street map coordinates.  
-- the road list elements are arranged in the following order:  
+. The package publishes two messages of the type **"pointsList"**. **pointsList** is a list of roads on the map, where each road is a list of points on the road.  
+. The first message is published on the topic **"/road_info"** and contains info about the road in **"point"** format. The road info has 5 points that are arranged as follows:  
 
-0. road id  
-1. the x-coordinate of the start node  
-2. the y-coordinate of the start node  
-3. the latitude of the start node  
-4. the longitude of the start node  
-5. the x-coordinate of the end node  
-6. the y-coordinate of the end node  
-7. the latitude of the end node  
-8. the longitude of the end node  
-9. the length of the road  
-10. a boolean that represents if the road is a one way road or not (0 = not a one way road, 1 = a one way road)  
+First Point. xy-coordinates of the start of the road
+Second Point. xy coordinates of the end of the road
+Third Point. latitude and longitude of the start of the road
+Fourth Point. latitude and longitude of the end of the road
+Fifth Point. is a tuple that has the length of the road as its first element and a boolean value that indicated whether the road in one-way or not as its second element. (1 = one-way / 0 = two-way)
+**Example:**
+road_info = [[(xStart, yStart),(xEnd, yEnd),(latStart, lonStart),(latEnd, lonEnd),(length, oneway)],[],[],...]  
+
+. The second message is published on the topic **"/road_points"** and contains all the xy coordinates of the points of each road.
+**Example:**
+road_points = [[(x1, y1),(x2, y2),(x3, y3)],[(x1, y1),(x2, y2)],[],[],...]  
 
 ##
