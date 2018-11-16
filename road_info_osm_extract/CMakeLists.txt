@@ -49,9 +49,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
    FILES
-#   Message1.msg
-   road.msg
-   road_lists.msg
+
+   point.msg
+   points.msg
+   pointsList.msg
 )
 
 ## Generate services in the 'srv' folder
