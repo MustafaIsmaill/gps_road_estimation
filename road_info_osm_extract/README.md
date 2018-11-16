@@ -22,16 +22,16 @@ road_info_osm_extract is a **ROS** package written in **Python** that extracts r
 . The package publishes two messages of the type **"pointsList"**. **pointsList** is a list of roads on the map, where each road is a list of points on the road.  
 . The first message is published on the topic **"/road_info"** and contains info about the road in **"point"** format. The road info has 5 points that are arranged as follows:  
 
-First Point. xy-coordinates of the start of the road
-Second Point. xy coordinates of the end of the road
-Third Point. latitude and longitude of the start of the road
-Fourth Point. latitude and longitude of the end of the road
-Fifth Point. is a tuple that has the length of the road as its first element and a boolean value that indicated whether the road in one-way or not as its second element. (1 = one-way / 0 = two-way)
-**Example:**
-road_info = [[(xStart, yStart),(xEnd, yEnd),(latStart, lonStart),(latEnd, lonEnd),(length, oneway)],[],[],...]  
+Point 1. xy-coordinates of the start of the road  
+Point 2. xy coordinates of the end of the road  
+Point 3. latitude and longitude of the start of the road  
+Point 4. latitude and longitude of the end of the road  
+Point 5. is a tuple that has the length of the road as its first element and a boolean value that indicated whether the road in one-way or not as its second element (1 = one-way / 0 = two-way).  
+**Example:**  
+`road_info = [[(xStart, yStart),(xEnd, yEnd),(latStart, lonStart),(latEnd, lonEnd),(length, oneway)],[],[],...]`  
 
-. The second message is published on the topic **"/road_points"** and contains all the xy coordinates of the points of each road.
-**Example:**
-road_points = [[(x1, y1),(x2, y2),(x3, y3)],[(x1, y1),(x2, y2)],[],[],...]  
+. The second message is published on the topic **"/road_points"** and contains all the xy coordinates of the points of each road.  
+**Example:**  
+`road_points = [[(x1, y1),(x2, y2),(x3, y3)],[(x1, y1),(x2, y2)],[],[],...]`  
 
 ##
