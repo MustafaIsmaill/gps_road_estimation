@@ -1,0 +1,1 @@
+These files contain saved gps trajectory data and map information that were saved and used just for testing.
