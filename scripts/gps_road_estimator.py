@@ -23,8 +23,6 @@ class estimate_road:
 
 		rospy.init_node('gps_road_estimator', anonymous=True) # initialize ros node
 
-		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback) # create gps sensor subscriber
-
 	# gps callback function
 	# this function will be called with every new gps msg received
 	def _gps_callback(self, gps):
@@ -109,11 +107,12 @@ class estimate_road:
 	def _get_path_points(self): #from service
 		self._path = Path()
 
+		rospy.loginfo("waiting for /path_getter service")
 		rospy.wait_for_service('path_getter')
 
 		try:
 			self._path_getter_service = rospy.ServiceProxy('path_getter', getPath)
-			self._path = self._path_getter_service('Universidad Carlos III de Madrid, 30, Avenida de la Universidad')
+			self._path = self._path_getter_service(434764, 4464870)
 		except rospy.ServiceException, e:
 			rospy.loginfo("Service call failed: %s", e)
 
@@ -181,20 +180,17 @@ class estimate_road:
 		for point in self._matched_points:
 			plt.plot(point.x, point.y, 'k.')
 
-	def get_longest_segment_length():
-		gdf_edges = get_gdf_edges()
-		length_array = []
-
-		for line in gdf_edges.geometry:
-		    length_array.append(line.length)
-
-		return max(length_array)
+	def _subscribe_to_gps(self):
+		rospy.loginfo("ready to subscribe to gps")
+		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback) # create gps sensor subscriber
 
 if __name__ == '__main__':
     try:
 
 		road_estimator = estimate_road()
 		path_points = road_estimator._get_path_points()
+
+		road_estimator._subscribe_to_gps()
 
 		rospy.spin()
 
