@@ -43,7 +43,7 @@ class estimate_road:
 		# if new path segment is detected this means that the vehicle has passed the previous way point
 		if self._prev_matched_edge != None:
 			if matched_edge != self._prev_matched_edge:
-				print("### way point checked ###")
+				rospy.loginfo("Waypoint checked")
 
 		# next way point is the last point on the current edge
 		next_wp = matched_edge.coords[:][len(matched_edge.coords[:])-1]
@@ -55,7 +55,7 @@ class estimate_road:
 		self._prev_matched_edge = matched_edge
 
 		# print("done matching %i..." % gps.header.seq)
-		print("distance to next way point is %f" % distance_to_next_wp)
+		rospy.loginfo("distance to next way point is %f", distance_to_next_wp)
 
 		# uncomment the following section for plotting
 		# if gps.header.seq == 4169:
@@ -69,9 +69,12 @@ class estimate_road:
 	# this function takes a gps point as input and returns its projection on the nearest path segment 
 	# and returns the start and end points of this path segment as well
 	def _map_match(self, gps_point):
-
+		# creates a circle with diameter of longest path segment
+		# this ensures that for each gps points, a sufficient number of nearby nodes will be found
 	    circle = gps_point.buffer(self._max_segment_length/2.0)
+	    # get the indeces of nodes that lie within the circle
 	    possible_matches_index = list(self._nodes_spatial_index.intersection((circle.bounds)))
+	    # get the nodes that lie within the circle
 	    possible_matches = self._nodes_gdf.iloc[possible_matches_index]
 	    precise_matches = possible_matches[possible_matches.intersects(circle)]
 	    candidate_nodes = list(precise_matches.index)
@@ -112,13 +115,13 @@ class estimate_road:
 			self._path_getter_service = rospy.ServiceProxy('path_getter', getPath)
 			self._path = self._path_getter_service('Universidad Carlos III de Madrid, 30, Avenida de la Universidad')
 		except rospy.ServiceException, e:
-			print("Service call failed: %s"%e)
+			rospy.loginfo("Service call failed: %s", e)
 
 		for point in self._path.path.poses:
 			path_point = (point.pose.position.x, point.pose.position.y)
 			self._path_points.append(path_point)
 
-		print("done getting path points ...")
+		rospy.loginfo("done getting path points ...")
 
 		self._get_path_edges()
 		self._get_path_nodes()
@@ -196,4 +199,4 @@ if __name__ == '__main__':
 		rospy.spin()
 
     except Exception as e:
-        print(e)
+        rospy.loginfo(e)

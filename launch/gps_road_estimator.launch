@@ -1,5 +1,5 @@
 <launch>
 
-  <node pkg="gps_road_estimation" type="gps_road_estimator.py" name="gps_road_estimator"/>
+  <node pkg="gps_road_estimation" type="gps_road_estimator.py" name="gps_road_estimator" output="screen" />
 
 </launch>
