@@ -1,4 +1,4 @@
-##**Note**: This package is now merged or integrated to the package /road_processing_planning.
+**Note: This package is now merged or integrated to the package /road_processing_planning.**
 
 ##**Road Info Extraction:**
 
