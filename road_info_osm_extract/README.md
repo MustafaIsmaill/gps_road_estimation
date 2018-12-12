@@ -1,3 +1,5 @@
+##**Note**: This package is now merged or integrated to the package /road_processing_planning.
+
 ##**Road Info Extraction:**
 
 road_info_osm_extract is a **ROS** package written in **Python** that extracts road information from a specified area in open street maps.
