@@ -1,8 +1,5 @@
-#!/usr/bin/env python
-
 import utm
 import math
-import time
 import rospy
 import geopandas
 import pandas as pd
@@ -117,12 +114,12 @@ class estimate_road:
 	def _get_path_points(self):
 		self._path = Path()
 
-		rospy.loginfo("waiting for /path_getter service")
+		rospy.loginfo("Waiting for /path_getter service ...")
 		rospy.wait_for_service('path_getter')
 
 		try:
 			self._path_getter_service = rospy.ServiceProxy('path_getter', getPath)
-			self._path = self._path_getter_service(434764, 4464870)
+			self._path = self._path_getter_service(434764, 4464870) # service call with hardcoded goal point
 		except rospy.ServiceException, e:
 			rospy.loginfo("Service call failed: %s", e)
 
@@ -130,10 +127,12 @@ class estimate_road:
 			path_point = (point.pose.position.x, point.pose.position.y)
 			self._path_points.append(path_point)
 
-		rospy.loginfo("done getting path points ...")
+		rospy.loginfo("Done getting path points ...")
 
 		self._get_path_edges()
 		self._get_path_nodes()
+
+		return self._path_points
 		
 	# creates geodataframes of the path edges
 	def _get_path_edges(self):
@@ -161,6 +160,8 @@ class estimate_road:
 
 		self._max_segment_length = max(length_array)
 
+		return self._edges_gdf
+
 	# creates a geodataframe of the path nodes
 	def _get_path_nodes(self):
 		path_nodes = []
@@ -175,9 +176,11 @@ class estimate_road:
 
 		self._nodes_spatial_index = self._nodes_gdf.sindex
 
+		return self._get_path_nodes
+
 	# creates a subscriber to the sensor msg
 	def _subscribe_to_gps(self):
-		rospy.loginfo("ready to subscribe to gps")
+		rospy.loginfo("Waiting for gps points ...")
 		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback)
 
 	def _plot_path(self):
@@ -191,14 +194,3 @@ class estimate_road:
 		for point in self._matched_points:
 			plt.plot(point.x, point.y, 'k.')
 
-if __name__ == '__main__':
-    try:
-
-		road_estimator = estimate_road()
-		road_estimator._get_path_points()
-		road_estimator._subscribe_to_gps()
-
-		rospy.spin()
-
-    except Exception as e:
-        rospy.loginfo(e)

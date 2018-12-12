@@ -4,12 +4,13 @@ gps_road_estimation is a **ROS** package written in **Python** that matches gps 
 
 **Package Inputs:**
 
-1. path way points  
-2. gps points  
+1. path way points (nav_msgs/Path.msg)
+2. gps points (sensor_msgs/NavSatFix.msg)
 
 **Package Outputs:**
 
-1. a corresponding or a projected point for each gps point on the path published on the topic /gps_projected_points. each published point has the same time stamp as the gps point corresponding to it.
+1. A point for each gps point, representing the projection of the gps point on the path (geometry_msgs/PointStamped.msg) and is published on the topic (/gps_projected_points).
+**Note**: every gps point and its corresponding projected point have the same time stamp.
 
 **How to use the package:**
 
