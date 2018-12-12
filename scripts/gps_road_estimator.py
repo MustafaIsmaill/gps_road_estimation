@@ -33,7 +33,7 @@ class estimate_road:
 		if (math.isnan(gps.latitude) == False) or (math.isnan(gps.longitude) == False):
 			gps_point = self._gps_to_utm(gps.latitude, gps.longitude) # convert lat and long to utm
 			matched_point, matched_edge = self._map_match(gps_point) # match gps points to path
-			self._update_pp_msg(gps.header.seq, gps.header.stamp, matched_point.x, matched_point.y) # update projected point msg
+			self._update_pp_msg(gps.header.stamp, matched_point.x, matched_point.y) # update projected point msg
 			self._projected_points_publisher.publish(self._projected_point) # publish projected point
 
 			# self._matched_points.append(matched_point) # add received projected point to list
@@ -89,8 +89,7 @@ class estimate_road:
 		return Point(UTMx, UTMy)
 
 	# creates a message of type pointStamped
-	def _update_pp_msg(self, seq, stamp, x, y):
-		self._projected_point.header.seq = seq
+	def _update_pp_msg(self, stamp, x, y):
 		self._projected_point.header.stamp = stamp
 		self._projected_point.point.x = x
 		self._projected_point.point.y = y
