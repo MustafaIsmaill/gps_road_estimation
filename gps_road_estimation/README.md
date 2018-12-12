@@ -9,7 +9,7 @@ gps_road_estimation is a **ROS** package written in **Python** that matches gps 
 
 **Package Outputs:**
 
-1. a corresponding or a projected point for each gps point on the path.
+1. a corresponding or a projected point for each gps point on the path published on the topic /gps_projected_points.
 
 **How to use the package:**
 
