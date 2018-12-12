@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
-import rospy
-import matplotlib.pyplot as plt
-import pandas as pd
-import geopandas
-import time
 import utm
+import math
+import time
+import rospy
+import geopandas
+import pandas as pd
+import matplotlib.pyplot as plt
 
 from shapely.geometry import Point
 from shapely.geometry import LineString
 
 from nav_msgs.msg import Path
 from sensor_msgs.msg import NavSatFix
+from geometry_msgs.msg import PointStamped
 from road_processing_planning.srv import getPath
 
 class estimate_road:
@@ -21,58 +23,35 @@ class estimate_road:
 		self._prev_matched_edge = None # attribute used for comparison between path segments
 		self._max_segment_length = 0.0 # attribute used to store the length of the longest path segment
 
+		self._projected_points_publisher = rospy.Publisher('gps_projected_points', PointStamped)
+		self._projected_point = PointStamped()
+
 		rospy.init_node('gps_road_estimator', anonymous=True) # initialize ros node
 
 	# gps callback function
-	# this function will be called with every new gps msg received
 	def _gps_callback(self, gps):
-		# convert gps latitude and longitude to utm coordinates
-		UTMx, UTMy, _, _ = utm.from_latlon(gps.latitude, gps.longitude)
-		# create a shapely geometry point object for the gps point
-		gps_point = Point(UTMx, UTMy)
-		# match the gps point to path
-		matched_point, matched_edge = self._map_match(gps_point)
+		if (math.isnan(gps.latitude) == False) or (math.isnan(gps.longitude) == False):
+			gps_point = self._gps_to_utm(gps.latitude, gps.longitude) # convert lat and long to utm
+			matched_point, matched_edge = self._map_match(gps_point) # match gps points to path
+			self._update_pp_msg(gps.header.seq, gps.header.stamp, matched_point.x, matched_point.y) # update projected point msg
+			self._projected_points_publisher.publish(self._projected_point) # publish projected point
 
-		# add received projected point to list
-		# this list can be used later for plotting
-		self._matched_points.append(matched_point)
+			# self._matched_points.append(matched_point) # add received projected point to list
 
-		# compare the current path segment with previous
-		# if new path segment is detected this means that the vehicle has passed the previous way point
-		if self._prev_matched_edge != None:
-			if matched_edge != self._prev_matched_edge:
-				rospy.loginfo("Waypoint checked")
+			if self._check_waypoint(matched_edge) == True:
+				rospy.loginfo("way point checked")
 
-		# next way point is the last point on the current edge
-		next_wp = matched_edge.coords[:][len(matched_edge.coords[:])-1]
-		# calculate the distance to next waypoint
-		distance_to_next_wp = matched_point.distance(Point(next_wp[0], next_wp[1]))
+			distance_to_next_wp = self._distance_to_next_waypoint(matched_edge, matched_point)
+			rospy.loginfo("distance to next way point is %f", distance_to_next_wp)
 
-		# the current path segment is now the previous road segment
-		# as a new path segment is received everytime this function is called
-		self._prev_matched_edge = matched_edge
+			self._update_matched_edge(matched_edge)
+		else:
+			rospy.loginfo("gps NaN detected")
 
-		# print("done matching %i..." % gps.header.seq)
-		rospy.loginfo("distance to next way point is %f", distance_to_next_wp)
-
-		# uncomment the following section for plotting
-		# if gps.header.seq == 4169:
-		# 	_, self._axis = plt.subplots()
-		# if gps.header.seq == 4534: #4534
-		# 	self._gps_subscriber.unregister()
-		# 	self._plot_path()
-		# 	self._plot_matching_output()
-		# 	plt.show()
-
-	# this function takes a gps point as input and returns its projection on the nearest path segment 
-	# and returns the start and end points of this path segment as well
+	# matches gps points to path
 	def _map_match(self, gps_point):
-		# creates a circle with diameter of longest path segment
-		# this ensures that for each gps points, a sufficient number of nearby nodes will be found
-	    circle = gps_point.buffer(self._max_segment_length/2.0)
-	    # get the indeces of nodes that lie within the circle
+	    circle = gps_point.buffer(self._max_segment_length/1.5)
 	    possible_matches_index = list(self._nodes_spatial_index.intersection((circle.bounds)))
-	    # get the nodes that lie within the circle
 	    possible_matches = self._nodes_gdf.iloc[possible_matches_index]
 	    precise_matches = possible_matches[possible_matches.intersects(circle)]
 	    candidate_nodes = list(precise_matches.index)
@@ -104,7 +83,39 @@ class estimate_road:
 
 	    return projected_point, true_edge_geom
 
-	def _get_path_points(self): #from service
+	# covnerts latitude and longitude to utmx and utmy
+	def _gps_to_utm(self, lat, lon):
+		UTMx, UTMy, _, _ = utm.from_latlon(lat, lon)
+		return Point(UTMx, UTMy)
+
+	# creates a message of type pointStamped
+	def _update_pp_msg(self, seq, stamp, x, y):
+		self._projected_point.header.seq = seq
+		self._projected_point.header.stamp = stamp
+		self._projected_point.point.x = x
+		self._projected_point.point.y = y
+
+	# check if a waypoint is passed or not
+	def _check_waypoint(self, new_edge):
+		if self._prev_matched_edge != None:
+			if new_edge != self._prev_matched_edge:
+				return True
+			else:
+				return False
+		else:
+			return False
+
+	# calculates distance between point and last point on the path segment
+	def _distance_to_next_waypoint(self, matched_edge, matched_point):
+		next_wp = matched_edge.coords[:][len(matched_edge.coords[:])-1]
+		return matched_point.distance(Point(next_wp[0], next_wp[1]))
+
+	# updates the current edge that the projected point lies on currently
+	def _update_matched_edge(self, new_edge):
+		self._prev_matched_edge = new_edge
+
+	# calls the /path_getter service to get path waypoints
+	def _get_path_points(self):
 		self._path = Path()
 
 		rospy.loginfo("waiting for /path_getter service")
@@ -124,9 +135,8 @@ class estimate_road:
 
 		self._get_path_edges()
 		self._get_path_nodes()
-
-		return self._path_points
 		
+	# creates geodataframes of the path edges
 	def _get_path_edges(self):
 		path_edges = []
 		data = {'id': [], 'u': [], 'v': [], 'geometry': []}
@@ -152,8 +162,7 @@ class estimate_road:
 
 		self._max_segment_length = max(length_array)
 
-		return self._edges_gdf
-
+	# creates a geodataframe of the path nodes
 	def _get_path_nodes(self):
 		path_nodes = []
 		data = {'id': [],'geometry': []}
@@ -167,7 +176,10 @@ class estimate_road:
 
 		self._nodes_spatial_index = self._nodes_gdf.sindex
 
-		return self._nodes_gdf
+	# creates a subscriber to the sensor msg
+	def _subscribe_to_gps(self):
+		rospy.loginfo("ready to subscribe to gps")
+		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback)
 
 	def _plot_path(self):
 		edges = self._get_path_edges()
@@ -180,16 +192,11 @@ class estimate_road:
 		for point in self._matched_points:
 			plt.plot(point.x, point.y, 'k.')
 
-	def _subscribe_to_gps(self):
-		rospy.loginfo("ready to subscribe to gps")
-		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback) # create gps sensor subscriber
-
 if __name__ == '__main__':
     try:
 
 		road_estimator = estimate_road()
-		path_points = road_estimator._get_path_points()
-
+		road_estimator._get_path_points()
 		road_estimator._subscribe_to_gps()
 
 		rospy.spin()
