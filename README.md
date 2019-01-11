@@ -1,6 +1,6 @@
 **GPS Road Estimation:**
 
-gps_road_estimation is a **ROS** package written in **Python** that matches gps points to open street maps roads.
+gps_road_estimation is a **ROS** package written in **Python** that matches gps points to open street maps' roads.
 
 **Subscribed Topics:**
 
