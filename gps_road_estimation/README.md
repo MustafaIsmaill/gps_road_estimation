@@ -1,10 +1,11 @@
 **GPS Road Estimation:**
 
-gps_road_estimation is a **ROS** package written in **Python** that matches gps points to roads.
+gps_road_estimation is a **ROS** package written in **Python** that matches gps points to open street maps' roads.
 
 **Subscribed Topics:**
 
 /ada/fix (sensor_msgs/NavSatFix.msg)
+Note: subscribed topic name can be changed from the .yaml file
 
 **Published Topics:**
 
@@ -12,9 +13,9 @@ gps_road_estimation is a **ROS** package written in **Python** that matches gps 
 
 **How to use the package:**
 
-1. first run the /road_processing_planning package
-2. run the /gps_road_estimation package through the launch command `$roslaunch gps_road_estimation gps_road_estimator.launch`
-3. run the bag file containing the gps points
+1. change the name of the subscribed topic from the file `/gps_road_estimation/params/map_match.yaml`, default is `ada/fix`
+2. run the /road_processing_planning package using the launch command `roslaunch road_processing_planning route_points.launch`
+3. run the /gps_road_estimation package using the launch command `roslaunch gps_road_estimation gps_road_estimator.launch`
 
 **ROS Dependencies:**
 
