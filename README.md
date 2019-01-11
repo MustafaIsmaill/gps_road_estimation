@@ -4,12 +4,12 @@ gps_road_estimation is a **ROS** package written in **Python** that matches gps 
 
 **Subscribed Topics:**
 
-1. gps raw data
+1. gps raw data //
 /ada/fix (sensor_msgs/NavSatFix.msg)
 
 **Published Topics:**
 
-1. matched gps points
+1. matched gps points //
 /gps_projected_points (geometry_msgs/PointStamped.msg)
 
 **How to use the package:**
