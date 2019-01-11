@@ -1,5 +1,11 @@
+<?xml version="1.0"?>
+
 <launch>
 
-  <node pkg="gps_road_estimation" type="main.py" name="gps_road_estimator" output="screen" />
+  <node pkg="gps_road_estimation" type="map_match_node.py" name="map_matching" clear_params="true" output="screen">
+    <rosparam command="load" file="$(find gps_road_estimation)/params/map_match.yaml" />
+    <!-- Change output name -->
+    <!--remap from="odometry/filtered" to="ada/odometry_fusion_ekf"/-->
+  </node>
 
 </launch>
