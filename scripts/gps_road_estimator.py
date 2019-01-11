@@ -20,7 +20,7 @@ class estimate_road:
 		self._prev_matched_edge = None # attribute used for comparison between path segments
 		self._max_segment_length = 0.0 # attribute used to store the length of the longest path segment
 
-		self._projected_points_publisher = rospy.Publisher('gps_projected_points', PointStamped)
+		self._projected_points_publisher = rospy.Publisher('gps_projected_points', PointStamped, queue_size=1)
 		self._projected_point = PointStamped()
 
 		rospy.init_node('gps_road_estimator', anonymous=True) # initialize ros node
@@ -47,38 +47,51 @@ class estimate_road:
 
 	# matches gps points to path
 	def _map_match(self, gps_point):
-	    circle = gps_point.buffer(self._max_segment_length/1.5)
-	    possible_matches_index = list(self._nodes_spatial_index.intersection((circle.bounds)))
-	    possible_matches = self._nodes_gdf.iloc[possible_matches_index]
-	    precise_matches = possible_matches[possible_matches.intersects(circle)]
-	    candidate_nodes = list(precise_matches.index)
+		while True:
+			circle = gps_point.buffer(self._max_segment_length)
+			possible_matches_index = list(self._nodes_spatial_index.intersection((circle.bounds)))
+			possible_matches = self._nodes_gdf.iloc[possible_matches_index]
+			precise_matches = possible_matches[possible_matches.intersects(circle)]
+			candidate_nodes = list(precise_matches.index)
 
-	    candidate_edges = []
-	    for node_id in candidate_nodes:
-	        if node_id == len(self._nodes_gdf)-1:
-	            point_tuple_in = (node_id-1, node_id)
-	            candidate_edges.append(point_tuple_in)
-	        else:
-	            point_tuple_in = (node_id-1, node_id)
-	            point_tuple_out = (node_id, node_id+1)
-	            candidate_edges.append(point_tuple_in)
-	            candidate_edges.append(point_tuple_out)
+			if len(candidate_nodes) != 0:
+				break
+			else:
+				rospy.loginfo("cannot find any near nodes, increasing search circle")
+				self._max_segment_length += 100
 
-	    distance = []
-	    length = []
-	    for edge in candidate_edges:
-	        line_string = self._edges_gdf[(self._edges_gdf.u == edge[0]) & (self._edges_gdf.v == edge[1])].geometry
-	        distance.append([line_string.distance(gps_point), edge, line_string])
+		candidate_edges = []
+		for node_id in candidate_nodes:
+			# first node
+			if node_id == 0:
+				point_tuple_out = (node_id, node_id+1)
+				candidate_edges.append(point_tuple_out)
+			# last node
+			elif node_id == len(self._nodes_gdf)-1:
+			    point_tuple_in = (node_id-1, node_id)
+			    candidate_edges.append(point_tuple_in)
+			# any other node
+			else:
+			    point_tuple_in = (node_id-1, node_id)
+			    point_tuple_out = (node_id, node_id+1)
+			    candidate_edges.append(point_tuple_in)
+			    candidate_edges.append(point_tuple_out)
 
-	        d = line_string.distance(gps_point)
-	        length.append(d.iloc[0])
+		distance = []
+		length = []
+		for edge in candidate_edges:
+			line_string = self._edges_gdf[(self._edges_gdf.u == edge[0]) & (self._edges_gdf.v == edge[1])].geometry
+			distance.append([line_string.distance(gps_point), edge, line_string])
+			
+			d = line_string.distance(gps_point)
+			length.append(d.iloc[0])
 
-	    _, idx = min((length[i],i) for i in xrange(len(length)))
-	    true_edge = distance[idx][1]
-	    true_edge_geom = distance[idx][2].item()
-	    projected_point = true_edge_geom.interpolate(true_edge_geom.project(gps_point)) # projected point
+		_, idx = min((length[i],i) for i in xrange(len(length)))
+		true_edge = distance[idx][1]
+		true_edge_geom = distance[idx][2].item()
+		projected_point = true_edge_geom.interpolate(true_edge_geom.project(gps_point)) # projected point
 
-	    return projected_point, true_edge_geom
+		return projected_point, true_edge_geom
 
 	# covnerts latitude and longitude to utmx and utmy
 	def _gps_to_utm(self, lat, lon):
@@ -119,7 +132,7 @@ class estimate_road:
 
 		try:
 			self._path_getter_service = rospy.ServiceProxy('path_getter', getPath)
-			self._path = self._path_getter_service(434764, 4464870) # service call with hardcoded goal point
+			self._path = self._path_getter_service(434587,4462624) # service call with hardcoded goal point
 		except rospy.ServiceException, e:
 			rospy.loginfo("Service call failed: %s", e)
 
@@ -176,12 +189,12 @@ class estimate_road:
 
 		self._nodes_spatial_index = self._nodes_gdf.sindex
 
-		return self._get_path_nodes
+		return self._nodes_gdf
 
 	# creates a subscriber to the sensor msg
 	def _subscribe_to_gps(self):
 		rospy.loginfo("Waiting for gps points ...")
-		self._gps_subscriber = rospy.Subscriber("/fix", NavSatFix, self._gps_callback)
+		self._gps_subscriber = rospy.Subscriber("/ada/fix", NavSatFix, self._gps_callback)
 
 	def _plot_path(self):
 		edges = self._get_path_edges()
@@ -194,3 +207,4 @@ class estimate_road:
 		for point in self._matched_points:
 			plt.plot(point.x, point.y, 'k.')
 
+# 2700
