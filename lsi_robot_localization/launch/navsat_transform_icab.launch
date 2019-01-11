@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="lsi_robot_localization" type="gps_frame_fix.py" name="gps_fix" output="screen" />
+
+  <node pkg="lsi_robot_localization" type="navsat_transform_node" name="navsat_transform_node" clear_params="true">
+    <rosparam command="load" file="$(find lsi_robot_localization)/params/navsat_transform_icab.yaml" />
+
+      <remap from="odometry/filtered" to="ada/odometry_fusion_ekf"/>
+      <remap from="gps/fix" to="ada/gps_corrected"/>
+
+  </node>
+</launch>
+

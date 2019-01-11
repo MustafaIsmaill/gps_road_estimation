@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Corrects gps frame id -->
+  <node pkg="lsi_robot_localization" type="fix_gps.py" name="fix_correct" />
+
+  <!-- Adds gps child frame id -->
+  <node pkg="lsi_robot_localization" type="fix_gps_odom.py" name="gps_correct" />
+
+  <!-- Adds fake covariance to velodyne -->
+  <node pkg="lsi_robot_localization" type="v_o_fix.py" name="vo_fix" />
+  
+  <!-- Convert gps fix to gps odometry -->
+  <node pkg="gps_common" type="utm_odometry_node" name="gps_to_odom">
+    <remap from="/fix" to="/ada/fix_corrected"/>
+    <remap from="/odom" to="/ada/gps_odometry"/>       
+  </node>
+
+  <!-- Start ekf localization node -->
+  <node pkg="lsi_robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find lsi_robot_localization)/params/ADA_params/ekf_ada.yaml" />
+    <!-- Change output name -->
+    <remap from="odometry/filtered" to="ada/odometry_fusion_ekf"/>
+  </node>
+
+  <!-- Add gps offset to ekf fusion >
+  <node pkg="lsi_robot_localization" type="ekf_global.py" name="add_fusion_offset" output="screen" /-->
+
+  <!-- Create vehicle speed odometry -->
+  <node pkg="lsi_robot_localization" type="speed_odometry.py" name="speed_odometry" output="screen" />
+
+  <!-- Plot ekf output and gps_odometry -->
+  <node pkg="lsi_robot_localization" type="plot_ekf_output.py" name="ekf_output_plot" output="screen" />
+
+</launch>

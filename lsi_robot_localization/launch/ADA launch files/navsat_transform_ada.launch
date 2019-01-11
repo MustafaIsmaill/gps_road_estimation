@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="lsi_robot_localization" type="navsat_transform_node" name="navsat_transform_node" clear_params="true">
+    <rosparam command="load" file="$(find lsi_robot_localization)/params/ADA_params/navsat_transform_ada.yaml" />
+
+      <remap from="odometry/filtered" to="ada/odometry_fusion_ekf"/>
+      <remap from="gps/fix" to="ada/fix_corrected"/>
+
+      <!-- Placeholders for input remapping. Set your topic names as the "to" values.
+      <remap from="imu/data" to=""/>
+      <remap from="odometry/filtered" to=""/>
+      <remap from="gps/fix" to=""/>
+      -->
+
+  </node>
+</launch>
+

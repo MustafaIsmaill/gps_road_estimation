@@ -1,0 +1,50 @@
+<launch>
+	<rosparam param="use_sim_time">true</rosparam>
+
+  <group ns = "icab1" clear_params = "true">
+  <node pkg="lsi_robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true" output = "screen">
+    <rosparam command="load" file="$(find lsi_robot_localization)/params/ukf_template_icab.yaml" />
+
+    <!--  Placeholder for output topic remapping -->
+    <remap from="odometry/filtered" to="fusion_odometry"/>
+    <!--<remap from="accel/filtered" to=""/> -->
+
+  </node>
+	<rosparam command="load" file="$(find icab_launch)/config/iCab1.yaml" />
+	
+	<node pkg="calibrate_extrinsics" type="calibrate_extrinsics" name="calibrate_extrinsics"/> 
+	<node pkg="odometry_uv_disparity" type="odometry" name="odometry_uv_disparity" >
+	<rosparam command="load" file="$(find odometry_uv_disparity)/config/visual_odometry.yaml"/>
+	</node> 
+	<node pkg="wheel_odometry" type="wheel_odometry" name="encoder_odometry_without_fusion"/>
+	
+	 <node pkg="wheel_odometry" type="encoder_odometry" name="encoder_odometry" output="screen">
+	 <rosparam command="load" file="$(find wheel_odometry)/config/encoder_odometry.yaml"/>
+	 </node>
+	 
+	 <!--node pkg="imu_odometry" name="imu_odometry" type="imu_odometry" >
+	 <rosparam command="load" file="$(find imu_odometry)/config/imu_odometry.yaml"/>
+	 </node-->
+
+	<node pkg="gps_odometry" type="gps_odometry" name="gps_odometry">
+	<rosparam command="load" file="$(find gps_odometry)/config/gps_odometry.yaml"/>
+	</node>
+	
+	<node pkg="gps_odometry" type="compass_odometry" name="compass_odometry">
+	<rosparam command="load" file="$(find gps_odometry)/config/compass_odometry.yaml"/>
+	</node>
+
+	<node pkg="disparity" type="disparity_node" name="disparity">
+		<param name="merged_image" value=""/>
+		<param name="kind" value="0"/>
+        	<param name="num_disp" value="80"/>
+        	<param name="neighb" value="21"/>
+        	<param name="sgbmWinSize" value="3"/>
+		<param name="cam" value="0"/>
+		<param name="method" value="0"/>
+        	<param name="disparity8" value="true"/>
+        	<param name="uvdisparity" value="true"/>
+		<param name="freeobsmask" value="true"/> 
+	</node>
+</group>
+</launch>

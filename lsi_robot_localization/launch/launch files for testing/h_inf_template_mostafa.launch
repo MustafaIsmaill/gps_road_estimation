@@ -1,0 +1,39 @@
+<launch>
+<rosparam param="use_sim_time">true</rosparam>
+<group ns = "icab1" clear_params = "true">
+<node pkg="robot_localization" type="h_inf_localization_node" name="h_inf_se" clear_params="true" output = "screen">
+<rosparam command="load" file="$(find robot_localization)/params/h_inf_template.yaml" />
+
+<!--  Placeholder for output topic remapping -->
+<remap from="odometry/filtered" to="fusion_odometry"/>
+<!--<remap from="accel/filtered" to=""/> -->
+
+</node>
+<rosparam command="load" file="$(find icab_launch)/config/iCab1.yaml" />
+<rosparam command="load" file="$(find odometry_fusion)/launch/odometry_fusion.yaml" />
+
+
+<!--node pkg="calibrate_extrinsics" type="calibrate_extrinsics" name="calibrate_extrinsics"/-->
+<!--node pkg="odometry_uv_disparity" type="odometry" name="odometry_uv_disparity" /-->
+<!--node pkg="encoder_odometry" type="encoder_odometry_without_fusion" name="encoder_odometry_without_fusion"/-->
+<node pkg="wheel_odometry" type="encoder_odometry" name="encoder_odometry" >
+<rosparam command="load" file="$(find wheel_odometry)/config/encoder_odometry.yaml"/>
+</node>
+<!--node pkg="gps_compass_odometry" type="gps_compass_odometry" name="gps_compass_odometry" /-->
+<!--node pkg="gps_with_angle" type="gps_with_angle" name="gps_with_angle" /-->
+
+<!--node pkg="gps_odometry" type="gps_odometry" name="gps_odometry"/-->
+<!--node pkg="disparity" type="disparity_node" name="disparity">
+<param name="merged_image" value=""/>
+<param name="kind" value="0"/>
+<param name="num_disp" value="80"/>
+<param name="neighb" value="21"/>
+<param name="sgbmWinSize" value="3"/>
+<param name="cam" value="0"/>
+<param name="method" value="0"/>
+<param name="disparity8" value="true"/>
+<param name="uvdisparity" value="true"/>
+<param name="freeobsmask" value="true"/>
+</node-->
+</group>
+</launch>
