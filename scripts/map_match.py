@@ -1,6 +1,7 @@
 import rospy
 
 import make_path as mp
+from collections import OrderedDict
 
 class map_match:
 	def __init__(self, path_points):
@@ -15,7 +16,6 @@ class map_match:
 		for edge in self.get_candidate_edges(gps_point):
 			line_string = self.edges_gdf[(self.edges_gdf.u == edge[0]) & (self.edges_gdf.v == edge[1])].geometry
 			distance.append([line_string.distance(gps_point), edge, line_string])
-			
 			dis = line_string.distance(gps_point)
 			length.append(dis.iloc[0])
 
@@ -44,6 +44,7 @@ class map_match:
 			    candidate_edges.append(point_tuple_in)
 			    candidate_edges.append(point_tuple_out)
 
+		candidate_edges = list(OrderedDict.fromkeys(candidate_edges))
 		return candidate_edges
 
 	def get_candidate_nodes(self, gps_point):
@@ -60,4 +61,5 @@ class map_match:
 				rospy.loginfo("cannot find any near nodes, increasing search circle")
 				self.max_segment_length += 100 
 
+		candidate_nodes.sort()
 		return candidate_nodes
