@@ -1,8 +1,8 @@
-#GPS Road Estimation:
+# GPS Road Estimation:
 
 gps_road_estimation is a **ROS** package written in **Python** that matches vehicle/robot position to open street maps' roads. The package can work in two modes, the first mode works directly with NavSatFix messages and the second mode works directly with Odometry messages.
 
-##1. Working with NavSatFix messages
+## 1. Working with NavSatFix messages
 
 **1.1 Subscribed Topics:**
 
