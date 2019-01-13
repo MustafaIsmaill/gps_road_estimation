@@ -36,7 +36,7 @@ def gps_pp_cb(pp):
     if pp.header.seq == 1:
         plot_edges()
 
-    if pp.header.seq >= 400: # 1375
+    if pp.header.seq >= 7653: # 1375
         gps_pp_sub.unregister()
         plot_output()
 
@@ -46,15 +46,15 @@ def gps_cb(gps):
     
     gps_out.append((x, y))
 
-    if gps.header.seq >= 400: #2700 fix 
+    if gps.header.seq >= 7653: #2700 fix 
         gps_sub.unregister()    
     
 if __name__ == '__main__':
     try:
 
         rospy.init_node('mm_output_plot', anonymous=False)
-        gps_sub = rospy.Subscriber("/ada/utm_gps", Odometry, gps_cb)
-        gps_pp_sub = rospy.Subscriber("/ada/gps_p_point", Odometry, gps_pp_cb)
+        gps_sub = rospy.Subscriber("/ada/odometry_fusion_ekf", Odometry, gps_cb)
+        gps_pp_sub = rospy.Subscriber("/ada/projected_points_odometry", Odometry, gps_pp_cb)
         
         rospy.spin()
 

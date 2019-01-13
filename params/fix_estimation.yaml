@@ -1,0 +1,12 @@
+
+# topic name to publish the gps odometry to
+pub_topic: "/ada/gps_odometry"
+
+# topic name to publish gps projected points odometry to 
+pp_pub_topic: "/ada/gps_pp_odometry"
+
+# gps odometry parent frame id name 
+frame_id: "utm"
+
+# gps odometry child frame id name
+child_frame_id: "ada/rear_wheel_axis"

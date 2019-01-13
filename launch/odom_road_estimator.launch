@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- load parameters from file -->
+  <rosparam command="load" file="$(find gps_road_estimation)/params/odom_estimation.yaml" />
+
+  <!-- run gps road estimation node -->
+  <node pkg="gps_road_estimation" type="map_match_node.py" name="map_matching" output="screen"/>
+
+   <!-- this node is used just for plotting and you can comment the next line > -->
+  <node pkg="gps_road_estimation" type="plot_mm_output.py" name="mm_output_plot" output="screen"/>
+
+</launch>
