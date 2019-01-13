@@ -3,7 +3,7 @@
 pub_topic: "/ada/odometry_fusion_ekf"
 
 # topic name to publish gps projected points odometry to 
-pp_pub_topic: "/ada/odometry_pp_odometry"
+pp_pub_topic: "/ada/odometry_fusion_projected"
 
 # odometry parent frame id name 
 frame_id: "utm"

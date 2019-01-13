@@ -24,7 +24,7 @@ run using `$ roslaunch gps_road_estimation odom_road_estimator.launch`
 
 ### 2.2 Published Topics:
 
-/ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+/ada/odometry_fusion_projected (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
 
 ## ROS Dependencies:
 
