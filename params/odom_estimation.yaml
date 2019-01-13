@@ -1,12 +1,7 @@
 
-# topic name that has the odometry
+# topic name that has the odometry to be matched
 pub_topic: "/ada/odometry_fusion_ekf"
 
 # topic name to publish gps projected points odometry to 
 pp_pub_topic: "/ada/odometry_fusion_projected"
 
-# odometry parent frame id name 
-frame_id: "utm"
-
-# odometry child frame id name
-child_frame_id: "ada/rear_wheel_axis"
