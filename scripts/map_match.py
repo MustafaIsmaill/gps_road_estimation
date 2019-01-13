@@ -1,14 +1,22 @@
 import rospy
 
+import math
 import make_path as mp
+
 from collections import OrderedDict
+from shapely.geometry import Point
 
 class map_match:
 	def __init__(self, path_points):
-		self.nodes_gdf = mp.get_path_nodes(path_points=path_points)
-		self.edges_gdf = mp.get_path_edges(path_points=path_points)
+		self.path_points = path_points
+
+		self.nodes_gdf = mp.get_path_nodes(path_points=self.path_points)
+		self.edges_gdf = mp.get_path_edges(path_points=self.path_points)
 		self.nodes_spatial_index = mp.get_nodes_spatial_idx(nodes_gdf=self.nodes_gdf)
 		self.max_segment_length = mp.get_longest_segment_len(edges_gdf=self.edges_gdf)
+
+		self.prev_dist = 0.0
+		self.ignorance_bool = 0
 
 	def get_pp_edge(self, gps_point):
 		distance = []
@@ -24,7 +32,7 @@ class map_match:
 		true_edge_geom = distance[idx][2].item()
 		projected_point = true_edge_geom.interpolate(true_edge_geom.project(gps_point)) # projected point
 
-		return projected_point, true_edge_geom
+		return projected_point, true_edge[1]
 
 	def get_candidate_edges(self, gps_point):
 		candidate_edges = []
@@ -63,3 +71,40 @@ class map_match:
 
 		candidate_nodes.sort()
 		return candidate_nodes
+
+	def update_goal_status(self, gps_point, matched_edge, goal_arr):
+		next_wp = Point(self.path_points[matched_edge][0], self.path_points[matched_edge][1])
+		self.curr_dist = self.get_dist(gps_point, next_wp)
+
+		goal_arr.header.stamp = rospy.Time.now()
+
+		if matched_edge == 1:
+			goal_arr.status_list[matched_edge-1].status = 1
+			goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
+		
+		elif matched_edge != len(self.path_points)-1:
+			goal_arr.status_list[matched_edge-1].status = 1
+			goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
+			goal_arr.status_list[matched_edge-2].status = 3
+			goal_arr.status_list[matched_edge-2].text = 'SUCCEEDED'
+		
+		elif matched_edge == len(self.path_points)-1:
+			if self.ignorance_bool == 0:
+				self.ignorance_bool = 1
+			else:
+				if self.curr_dist > self.prev_dist:
+					goal_arr.status_list[matched_edge-1].status = 3
+					goal_arr.status_list[matched_edge-1].text = 'SUCCEEDED'
+				else:
+					goal_arr.status_list[matched_edge-1].status = 1
+					goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
+					goal_arr.status_list[matched_edge-2].status = 3
+					goal_arr.status_list[matched_edge-2].text = 'SUCCEEDED'
+
+		self.prev_dist = self.curr_dist
+		return goal_arr
+
+	def get_dist(self, point1, point2):
+		return point1.distance(point2)
+
+# 5.29731127447
