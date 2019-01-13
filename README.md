@@ -29,12 +29,12 @@ gps_road_estimation is a **ROS** package written in **Python** that matches vehi
 
 **ROS Dependencies:**
 
-1. /gps_umd (package) `sudo apt-get install ros-kinetic-gps-umd`
+1. /gps_umd (package) `$ sudo apt-get install ros-kinetic-gps-umd`
 2. /road_processing_planning (package)
 
 **Python Dependencies:**
 
-1. utm `pip2 install utm`
-2. geopandas `pip2 install geopandas`
-3. pandas `pip2 install pandas`
-4. shapely `pip2 install shapely`
+1. utm `$ sudo pip2 install utm`
+2. geopandas `$ sudo pip2 install geopandas`
+3. pandas `$ sudo pip2 install pandas`
+4. shapely `$ sudo pip2 install shapely`
