@@ -4,13 +4,13 @@ gps_road_estimation is a **ROS** package written in **Python** that matches vehi
 
 **1. Working with NavSatFix messages**
 
-	**1.1 Subscribed Topics:**
+**1.1 Subscribed Topics:**
 
-	/ada/fix (sensor_msgs/NavSatFix.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/launch/fix_road_estimator.launch` and change the "sub_topic" argument value.
+/ada/fix (sensor_msgs/NavSatFix.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/launch/fix_road_estimator.launch` and change the "sub_topic" argument value.
 
-	**1.2 Published Topics:**
+**1.2 Published Topics:**
 
-	/ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+/ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
 
 **2. Working with Odometry messages**
 
