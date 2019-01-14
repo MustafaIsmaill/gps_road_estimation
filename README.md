@@ -12,7 +12,8 @@ run using `$ roslaunch gps_road_estimation fix_road_estimator.launch`
 
 ### 1.2 Published Topics:
 
-/ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+1. /ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg and the status of each goal indicates if the goal has been reached or not.
 
 ## 2. Working with Odometry messages
 
@@ -24,7 +25,8 @@ run using `$ roslaunch gps_road_estimation odom_road_estimator.launch`
 
 ### 2.2 Published Topics:
 
-/ada/odometry_fusion_projected (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+1. /ada/odometry_fusion_projected (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
+2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg and the status of each goal indicates if the goal has been reached or not.
 
 ## ROS Dependencies:
 
