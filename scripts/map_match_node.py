@@ -8,7 +8,7 @@ from nav_msgs.msg import Path
 from nav_msgs.msg import Odometry
 from actionlib_msgs.msg import GoalStatus
 from actionlib_msgs.msg import GoalStatusArray
-from road_processing_planning.srv import getPath
+# from road_processing_planning.srv import getPath
 
 from shapely.geometry import Point
 
@@ -22,19 +22,20 @@ map_m = None
 
 # ros service
 def get_path_points():
-	rospy.loginfo("Waiting for /path_getter service ...")
-	rospy.wait_for_service('path_getter')
+	rospy.loginfo("Waiting for the path msg ...")
 
-	while True:
-		try:
-			path_getter_service = rospy.ServiceProxy('path_getter', getPath)
-			path = path_getter_service(434587,4462624) #### hardcoded goal point
-			break
-		except rospy.ServiceException, e:
-			rospy.loginfo("Service call failed: %s Will try again", e)
+	# while True:
+	# 	try:
+	# 		path_getter_service = rospy.ServiceProxy('path_getter', getPath)
+	# 		path = path_getter_service(434587,4462624) #### hardcoded goal point
+	# 		break
+	# 	except rospy.ServiceException, e:
+	# 		rospy.loginfo("Service call failed: %s Will try again", e)
+
+	path = rospy.wait_for_message(rospy.get_param("path_topic"), Path)
 
 	path_points = []
-	for point in path.path.poses:
+	for point in path.poses:
 		path_point = (point.pose.position.x, point.pose.position.y)
 		path_points.append(path_point)
 

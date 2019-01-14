@@ -1,4 +1,7 @@
 
+# topic name that has the path msg
+path_topic: "route_points"
+
 # topic name to publish the gps odometry to
 pub_topic: "/ada/gps_odometry"
 
