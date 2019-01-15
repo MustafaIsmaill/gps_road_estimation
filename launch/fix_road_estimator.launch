@@ -7,7 +7,7 @@
   <arg name="sub_topic" value="/ada/fix"/>
 
   <!-- load parameters from file -->
-  <rosparam command="load" file="$(find gps_road_estimation)/params/fix_estimation.yaml" />
+  <rosparam command="load" file="$(find gps_road_estimation)/params/road_estimation.yaml" />
 
   <!-- run fix to odometry node -->
   <node pkg="gps_common" type="utm_odometry_node" name="fix_to_odometry">
@@ -19,9 +19,9 @@
   <node pkg="gps_road_estimation" type="fix_gps_frame.py" name="gps_fix_frame"/>
 
   <!-- run gps road estimation node -->
-  <node pkg="gps_road_estimation" type="map_match_node.py" name="map_matching" output="screen"/>
+  <node pkg="gps_road_estimation" type="map_match_node.py" name="road_estimation" output="screen"/>
 
-  <!-- this node is used just for plotting and you can comment the next line >
-  <node pkg="gps_road_estimation" type="plot_mm_output.py" name="mm_output_plot" output="screen"/-->
+  <!-- this node is used just for plotting and you can comment the next line -->
+  <!-- <node pkg="gps_road_estimation" type="plot_mm_output.py" name="mm_output_plot" output="screen"/> -->
 
 </launch>

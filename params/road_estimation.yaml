@@ -1,0 +1,19 @@
+
+# topic name that has the path msg
+path_topic: "route_points"
+
+# odometry topic name
+# pub_topic: "ada/gps_odometry"
+pub_topic: "ada/odometry_fusion_ekf"
+
+# topic name to publish projected odometry points tp 
+pp_pub_topic: "ada/projected_odometry"
+
+# topic name to publish goal status to
+goal_topic: "ada/goal_status"
+
+# gps data parent frame id name 
+frame_id: "map"
+
+# gps data child frame id name
+child_frame_id: "ada/rear_wheel_axis"
