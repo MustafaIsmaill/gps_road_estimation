@@ -1,6 +1,6 @@
 # GPS Road Estimation:
 
-gps_road_estimation is a **ROS** package written in **Python** that matches vehicle/robot position to open street maps' roads. The package can work in two modes, the first mode works directly with NavSatFix messages and the second mode works directly with Odometry messages.
+gps_road_estimation is a **ROS** package written in **Python** that matches vehicle/robot position to open street maps' roads. The package can work with two different types of inputs, NavSatFix and Odometry messages.
 
 ## 1. Working with NavSatFix messages
 
@@ -8,12 +8,7 @@ run using `$ roslaunch gps_road_estimation fix_road_estimator.launch`
 
 ### 1.1 Subscribed Topics:
 
-/ada/fix (sensor_msgs/NavSatFix.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/launch/fix_road_estimator.launch` and change the "sub_topic" argument value.
-
-### 1.2 Published Topics:
-
-1. /ada/gps_pp_odometry (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
-2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg and the status of each goal indicates if the goal has been reached or not.
+/ada/fix (sensor_msgs/NavSatFix.msg) is the default topic name, if you want to change it go to the file `/gps_road_estimation/launch/fix_road_estimator.launch` and change the "sub_topic" argument value.
 
 ## 2. Working with Odometry messages
 
@@ -21,12 +16,12 @@ run using `$ roslaunch gps_road_estimation odom_road_estimator.launch`
 
 ### 2.1 Subscribed Topics:
 
-/ada/odometry_fusion_ekf (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/odom_estimation.yaml` and change the "pub_topic" parameter value.
+/ada/odometry_fusion_ekf (nav_msgs/Odometry.msg) is the default topic name, if you want to change it go to the file `/gps_road_estimation/params/road_estimation.yaml` and change the "pub_topic" parameter value.
 
-### 2.2 Published Topics:
+## 3 Published Topics:
 
-1. /ada/odometry_fusion_projected (nav_msgs/Odometry.msg). Note: if you want to change the name of this topic you can go to the file `/gps_road_estimation/params/fix_estimation.yaml` and change the "pp_pub_topic" parameter value.
-2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg and the status of each goal indicates if the goal has been reached or not.
+1. /ada/projected_odometry (nav_msgs/Odometry.msg). 
+2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg (excluding the first point which is the vehicle's start position), and the status of each goal indicates if the goal has been reached or not.
 
 ## ROS Dependencies:
 
