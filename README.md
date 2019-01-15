@@ -18,9 +18,9 @@ run using `$ roslaunch gps_road_estimation odom_road_estimator.launch`
 
 /ada/odometry_fusion_ekf (nav_msgs/Odometry.msg) is the default topic name, if you want to change it go to the file `/gps_road_estimation/params/road_estimation.yaml` and change the "pub_topic" parameter value.
 
-## 3 Published Topics:
+## 3. Published Topics:
 
-1. /ada/projected_odometry (nav_msgs/Odometry.msg). 
+1. /ada/projected_odometry (nav_msgs/Odometry.msg).
 2. /ada/goal_status (actionlib_msgs/GoalStatusArray.msg). The goal status array msg has a goal for each way point in the path msg (excluding the first point which is the vehicle's start position), and the status of each goal indicates if the goal has been reached or not.
 
 ## ROS Dependencies:
