@@ -9,6 +9,6 @@
   <node pkg="gps_road_estimation" type="map_match_node.py" name="road_estimation" output="screen"/>
 
    <!-- this node is used just for plotting and you can comment the next line > -->
-  <node pkg="gps_road_estimation" type="plot_mm_output.py" name="mm_output_plot" output="screen"/>
+  <!-- <node pkg="gps_road_estimation" type="plot_mm_output.py" name="mm_output_plot" output="screen"/> -->
 
 </launch>

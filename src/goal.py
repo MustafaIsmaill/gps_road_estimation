@@ -12,7 +12,7 @@ class goal:
 		self.make_goal_array()
 
 		self.position_uncertainity = 5.0
-
+		
 	def make_goal_array(self):
 		for path in range(0, len(self.path_points)-1):
 			new_goal = GoalStatus()
@@ -24,32 +24,29 @@ class goal:
 			self.goal_arr.status_list.append(new_goal)
 
 	def get_goal_status(self, matched_point, matched_edge):
-		next_wp = Point(self.path_points[matched_edge][0], 
-			            self.path_points[matched_edge][1])
+		next_wp = Point(self.path_points[matched_edge+1][0], 
+			            self.path_points[matched_edge+1][1])
 		
 		self.curr_dist = self.get_dist(matched_point, next_wp)
 
 		self.goal_arr.header.stamp = rospy.Time.now()
 
-		if matched_edge == 1:
-			self.goal_arr.status_list[matched_edge-1].status = 1
-			self.goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
-		
-		elif matched_edge != len(self.path_points)-1:
-			self.goal_arr.status_list[matched_edge-1].status = 1
-			self.goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
-			self.goal_arr.status_list[matched_edge-2].status = 3
-			self.goal_arr.status_list[matched_edge-2].text = 'SUCCEEDED'
-		
-		elif matched_edge == len(self.path_points)-1:
-			if self.curr_dist > self.position_uncertainity:
-				self.goal_arr.status_list[matched_edge-1].status = 1
-				self.goal_arr.status_list[matched_edge-1].text = 'ACTIVE'
-				self.goal_arr.status_list[matched_edge-2].status = 3
-				self.goal_arr.status_list[matched_edge-2].text = 'SUCCEEDED'
-			else:
-				self.goal_arr.status_list[matched_edge-1].status = 3
-				self.goal_arr.status_list[matched_edge-1].text = 'SUCCEEDED'
+		if (matched_edge == len(self.path_points)-2) and (self.curr_dist < self.position_uncertainity):
+			self.goal_arr.status_list[matched_edge].status = 3
+			self.goal_arr.status_list[matched_edge].text = 'SUCCEEDED'
+		elif (matched_edge == len(self.path_points)-2) and (self.curr_dist > self.position_uncertainity):
+			self.goal_arr.status_list[matched_edge].status = 1
+			self.goal_arr.status_list[matched_edge].text = 'ACTIVE'
+		else:
+			self.goal_arr.status_list[matched_edge].status = 1
+			self.goal_arr.status_list[matched_edge].text = 'ACTIVE'
+
+		for idx in range(0, matched_edge):
+			self.goal_arr.status_list[idx].status = 3
+			self.goal_arr.status_list[idx].text = 'SUCCEEDED'
+
+		# rospy.loginfo(matched_edge)
+		# rospy.loginfo(self.curr_dist)
 
 		return self.goal_arr
 

@@ -37,7 +37,7 @@ def get_path_points():
 		path_point = (point.pose.position.x, point.pose.position.y)
 		path_points.append(path_point)
 
-	rospy.loginfo("done parsing path msg ...")
+	# rospy.loginfo(path_points)
 	return path_points
 
 def odometry_callback(odom):

@@ -4,6 +4,8 @@ import pandas as pd
 from shapely.geometry import Point
 from shapely.geometry import LineString
 
+import matplotlib.pyplot as plt
+
 class path:
 	def __init__(self, path_points):
 		self.path_points = path_points
@@ -27,6 +29,10 @@ class path:
 
 		edges_df = pd.DataFrame(data, columns = ['id', 'u', 'v', 'geometry'])
 		self.path_edges = geopandas.GeoDataFrame(edges_df, geometry='geometry')
+
+		# fig, ax = plt.subplots()
+		# self.path_edges.plot(ax=ax)
+		# plt.show()
 
 	def make_path_nodes(self):
 		path_nodes = []

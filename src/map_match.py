@@ -12,6 +12,8 @@ class map_match:
 
 		self.search_radius = 50
 
+		# self.file = open("/home/mustafaismail/Documents/GP/catkin_ws/src/gps_road_estimation/src/error_data/gps_no_shift.txt", "w") 
+
 	def get_projected_p(self, odom_point):
 		distance = []
 		for edge in self.get_candidate_edges(odom_point):
@@ -21,11 +23,14 @@ class map_match:
 		tup = min(distance, key = lambda t: t[0].values)
 		true_edge = tup[1]
 		true_edge_geom = tup[2].item()
+		
+		# self.file.write(str(tup[0].values))
+		# rospy.loginfo(tup[0].values)
 
 		projected_point = true_edge_geom.interpolate(true_edge_geom.project(odom_point)) # projected point
 
 		self.search_radius = self.path.get_edge_length(true_edge[0])/2
-		return projected_point, true_edge[1]
+		return projected_point, true_edge[0]
 
 	def get_candidate_edges(self, odom_point):
 		candidate_edges = []

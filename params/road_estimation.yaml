@@ -4,7 +4,7 @@ path_topic: "route_points"
 
 # odometry topic name
 # pub_topic: "ada/gps_odometry"
-pub_topic: "ada/odometry_fusion_ekf"
+pub_topic: "ada/odometry_fusion_ukf"
 
 # topic name to publish projected odometry points tp 
 pp_pub_topic: "ada/projected_odometry"

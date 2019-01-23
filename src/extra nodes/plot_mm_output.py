@@ -36,7 +36,7 @@ def odom_cb(msg):
     if msg.header.seq == 1:
         plot_edges()
 
-    if msg.header.seq >= 7681: # 1375
+    if msg.header.seq >= 1572: # 1375
         odometry_sub.unregister()
         plot_output()
 
@@ -46,7 +46,7 @@ def odom_pp_cb(msg):
     
     odom_pp_out.append((x, y))
 
-    if msg.header.seq >= 7472: #2700 fix 
+    if msg.header.seq >= 1642: #2700 fix 
         odom_pp_sub.unregister()
     
 if __name__ == '__main__':
