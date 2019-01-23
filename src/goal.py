@@ -29,21 +29,24 @@ class goal:
 		
 		self.curr_dist = self.get_dist(matched_point, next_wp)
 
+		active_msg = 'ACTIVE. Distance to next path point is: ' + str(self.curr_dist) + ' meters.'
+		succeeded_msg = 'SUCCEEDED. Path point passed.'
+
 		self.goal_arr.header.stamp = rospy.Time.now()
 
 		if (matched_edge == len(self.path_points)-2) and (self.curr_dist < self.position_uncertainity):
 			self.goal_arr.status_list[matched_edge].status = 3
-			self.goal_arr.status_list[matched_edge].text = 'SUCCEEDED'
+			self.goal_arr.status_list[matched_edge].text = succeeded_msg
 		elif (matched_edge == len(self.path_points)-2) and (self.curr_dist > self.position_uncertainity):
 			self.goal_arr.status_list[matched_edge].status = 1
-			self.goal_arr.status_list[matched_edge].text = 'ACTIVE'
+			self.goal_arr.status_list[matched_edge].text = active_msg
 		else:
 			self.goal_arr.status_list[matched_edge].status = 1
-			self.goal_arr.status_list[matched_edge].text = 'ACTIVE'
+			self.goal_arr.status_list[matched_edge].text = active_msg
 
 		for idx in range(0, matched_edge):
 			self.goal_arr.status_list[idx].status = 3
-			self.goal_arr.status_list[idx].text = 'SUCCEEDED'
+			self.goal_arr.status_list[idx].text = succeeded_msg
 
 		# rospy.loginfo(matched_edge)
 		# rospy.loginfo(self.curr_dist)
