@@ -58,6 +58,8 @@ def odometry_callback(odom):
 	odometry_pp_pub.publish(odom)
 	goal_status_pub.publish(goal_arr)
 
+	# rospy.loginfo(matched_edge)
+
 	if goal_m.final_goal_is_reached() == True:
 		rospy.loginfo("reached final goal ...")
 		sub.unregister()

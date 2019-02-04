@@ -10,11 +10,14 @@ class map_match:
 		self.edges_gdf = self.path.get_path_edges()
 		self.nodes_spatial_index = self.path.get_nodes_spatial_idx()
 
-		self.search_radius = 50
+		# self.search_radius = 1.5
 
 		# self.file = open("/home/mustafaismail/Documents/GP/catkin_ws/src/gps_road_estimation/src/error_data/gps_no_shift.txt", "w") 
 
 	def get_projected_p(self, odom_point):
+		self.search_radius = 1.0
+
+		t = time.time()
 		distance = []
 		for edge in self.get_candidate_edges(odom_point):
 			line_string = self.edges_gdf[(self.edges_gdf.u == edge[0]) & (self.edges_gdf.v == edge[1])].geometry
@@ -29,7 +32,8 @@ class map_match:
 
 		projected_point = true_edge_geom.interpolate(true_edge_geom.project(odom_point)) # projected point
 
-		self.search_radius = self.path.get_edge_length(true_edge[0])/2
+		# rospy.loginfo(time.time() - t)
+		# self.search_radius = self.path.get_edge_length(true_edge[0])
 		return projected_point, true_edge[0]
 
 	def get_candidate_edges(self, odom_point):
@@ -64,6 +68,7 @@ class map_match:
 			if len(candidate_nodes) != 0:
 				break
 			else:
-				self.search_radius += 50 
+				rospy.loginfo(self.search_radius)
+				self.search_radius += 5
 
 		return candidate_nodes
