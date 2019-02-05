@@ -68,7 +68,7 @@ class map_match:
 			if len(candidate_nodes) != 0:
 				break
 			else:
-				rospy.loginfo(self.search_radius)
+				# rospy.loginfo(self.search_radius)
 				self.search_radius += 5
 
 		return candidate_nodes
