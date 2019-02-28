@@ -19,15 +19,15 @@ map_m = None
 goal_m = None
 
 # ros publishers
-odometry_pp_pub = rospy.Publisher(rospy.get_param("pp_pub_topic"), Odometry, queue_size=1) # projected point publisher
-goal_status_pub = rospy.Publisher(rospy.get_param("goal_topic"), GoalStatusArray, queue_size=1) # goal status publisher
+odometry_pp_pub = rospy.Publisher(rospy.get_param("/road_estimation/published_topic"), Odometry, queue_size=1) # projected point publisher
+goal_status_pub = rospy.Publisher(rospy.get_param("/road_estimation/goal_topic"), GoalStatusArray, queue_size=1) # goal status publisher
 
 def get_path_points():
 	rospy.loginfo("Waiting for the path msg ...")
 
 	while True:
 		try:
-			path = rospy.wait_for_message(rospy.get_param("path_topic"), Path)
+			path = rospy.wait_for_message(rospy.get_param("/road_estimation/path_topic"), Path)
 			break
 		except Exception as e:
 			rospy.loginfo("The following Exception is raised while getting path msg" + e + " ... will try again.")
@@ -73,8 +73,8 @@ if __name__ == '__main__':
 		map_m = map_match(my_path)
 		goal_m = goal(path_points)
 
+		sub = rospy.Subscriber(rospy.get_param("/road_estimation/odometry_topic"), Odometry, odometry_callback)
 		rospy.loginfo("subscribed ...")
-		sub = rospy.Subscriber(rospy.get_param("pub_topic"), Odometry, odometry_callback)
 	    
 		rospy.spin()
 	

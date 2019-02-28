@@ -1,19 +1,14 @@
+# R-tree search radius in meters
+search_radius: 0.25
 
-# topic name that has the path msg
+# path msg topic name
 path_topic: "route_points"
 
-# odometry topic name
-pub_topic: "ada/gps_odometry"
-# pub_topic: "ada/odometry_fusion_ukf"
+# input odometry topic name
+odometry_topic: "gps/odometry"
 
-# topic name to publish projected odometry points tp 
-pp_pub_topic: "ada/projected_odometry"
+# output odometry topic name
+published_topic: "ada/projected_odometry"
 
-# topic name to publish goal status to
+# goal status msg topic name
 goal_topic: "ada/goal_status"
-
-# gps data parent frame id name 
-frame_id: "map"
-
-# gps data child frame id name
-child_frame_id: "ada/rear_wheel_axis"

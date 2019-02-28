@@ -29,7 +29,7 @@ class goal:
 		
 		self.curr_dist = self.get_dist(matched_point, next_wp)
 
-		active_msg = 'ACTIVE. Distance to next path point is: ' + str(self.curr_dist) + ' meters.'
+		active_msg = 'ACTIVE. Distance to path point is: ' + str(self.curr_dist) + ' meters.'
 		succeeded_msg = 'SUCCEEDED. Path point passed.'
 
 		self.goal_arr.header.stamp = rospy.Time.now()

@@ -54,5 +54,8 @@ class path:
 	def get_nodes_spatial_idx(self):
 		return self.path_nodes.sindex
 
+	def get_edges_spatial_idx(self):
+		return self.path_edges.sindex
+
 	def get_edge_length(self, edge):
 		return self.path_edges.geometry[edge].length

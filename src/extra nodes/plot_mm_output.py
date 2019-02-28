@@ -19,11 +19,11 @@ def plot_edges():
 def plot_output():
     for i in range(0, len(odom_out)):
         rospy.loginfo("plotting odometry")
-        plt.plot(odom_out[i][0], odom_out[i][1], 'r.', alpha=1)
+        plt.plot(odom_out[i][0], odom_out[i][1], 'r.')
 
     for i in range(0, len(odom_pp_out)):
         rospy.loginfo("plotting projected odometry")
-        plt.plot(odom_pp_out[i][0], odom_pp_out[i][1], 'k.', alpha=1)
+        plt.plot(odom_pp_out[i][0], odom_pp_out[i][1], 'k.')
 
     plt.show()
 
@@ -36,7 +36,7 @@ def odom_cb(msg):
     if msg.header.seq == 1:
         plot_edges()
 
-    if msg.header.seq >= 1572: # 1375
+    if msg.header.seq >= 1375: # 1375
         odometry_sub.unregister()
         plot_output()
 
@@ -46,15 +46,15 @@ def odom_pp_cb(msg):
     
     odom_pp_out.append((x, y))
 
-    if msg.header.seq >= 1642: #2700 fix 
+    if msg.header.seq >= 1375: #2700 fix 
         odom_pp_sub.unregister()
     
 if __name__ == '__main__':
     try:
 
         rospy.init_node('mm_output_plot', anonymous=False)
-        odometry_sub = rospy.Subscriber(rospy.get_param("pub_topic"), Odometry, odom_cb)
-        odom_pp_sub = rospy.Subscriber(rospy.get_param("pp_pub_topic"), Odometry, odom_pp_cb)
+        odometry_sub = rospy.Subscriber(rospy.get_param("road_estimation/odometry_topic"), Odometry, odom_cb)
+        odom_pp_sub = rospy.Subscriber(rospy.get_param("road_estimation/published_topic"), Odometry, odom_pp_cb)
         
         rospy.spin()
 
